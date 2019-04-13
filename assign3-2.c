@@ -12,7 +12,7 @@ void *consumer();
 FILE* pfile;
 int index;
 int j;
-char song[SIZE][SIZE];
+char song[SIZE][SIZE]; // 텍스트 파일 읽어와서 줄별로 저장할 배열
 
 int main()
 {
@@ -25,8 +25,8 @@ int main()
 
   pfile = fopen("song.txt", "r");
 
+  // 텍스트 파일 읽어와서 배열에 저장
   if(pfile != NULL) {
-
     while(!feof(pfile)) {
       fgets(song[j], sizeof(song[j]), pfile);
       j++;
@@ -34,6 +34,7 @@ int main()
     fclose(pfile);
   }
 
+  // 쓰레드 생성
   pthread_create(&thread[0], NULL, &producer, NULL);
   pthread_create(&thread[1], NULL, &consumer, NULL);
 
@@ -44,11 +45,11 @@ int main()
       exit(1);
     }
   }
-
   return 0;
-
 }
 
+// 두 쓰레드가 함께 index 변수에 접근해 사용할 수 있다.
+// 각각의 쓰레드에서 index번째 가사를 출력하고, index를 증가시킨다.
 void *producer()
 {
   while(index < j) {
